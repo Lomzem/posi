@@ -216,11 +216,12 @@
 				size="icon-sm"
 				data-align="inline-end"
 				onclick={copyMaxShares}
+				class="cursor-pointer"
 			>
 				{#if didCopyMaxShares}
 					<CheckIcon class="text-green-600" />
 				{:else}
-					<ClipboardIcon class="cursor-pointer" />
+					<ClipboardIcon />
 				{/if}
 			</InputGroup.Button>
 		</InputGroup.Root>
