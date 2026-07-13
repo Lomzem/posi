@@ -53,7 +53,7 @@
 		entry: 0,
 		stop: 0,
 		exit: 0,
-		rMultiple: 0
+		rMultiple: 0.1
 	};
 
 	const settingsCollection = createCollection(
@@ -91,6 +91,22 @@
 
 	function formatCents(cents: number): string {
 		return (cents / 100).toFixed(2);
+	}
+
+	function formatDecimal(value: number): string {
+		if (!Number.isFinite(value)) {
+			return '0.00';
+		}
+
+		const formatted = String(value);
+		const decimalIndex = formatted.indexOf('.');
+
+		if (decimalIndex === -1) {
+			return `${formatted}.00`;
+		}
+
+		const decimalPlaces = formatted.length - decimalIndex - 1;
+		return decimalPlaces < 2 ? value.toFixed(2) : formatted;
 	}
 
 	function parseDigits(value: string): number {
@@ -218,7 +234,7 @@
 				autocomplete="off"
 				step="0.1"
 				min="0"
-				value={settings.rMultiple ?? 0}
+				value={formatDecimal(settings.rMultiple ?? 0.1)}
 				oninput={(event) => updateNumber('rMultiple', event)}
 			/>
 		</div>
