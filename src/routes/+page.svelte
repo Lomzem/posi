@@ -67,6 +67,21 @@
 	const settingsQuery = useLiveQuery((q) => q.from({ settings: settingsCollection }));
 
 	const settings = $derived(settingsQuery.data[0]);
+	const maxShares = $derived.by(() => {
+		if (!settings) {
+			return 0;
+		}
+
+		const riskPerShare = settings.entry - settings.stop;
+		const riskAmount = (settings.balance / 100) * (settings.rMultiple ?? 0);
+
+		if (riskPerShare <= 0 || riskAmount <= 0) {
+			return 0;
+		}
+
+		const shares = riskAmount / (riskPerShare / 100);
+		return Number.isFinite(shares) ? Math.floor(shares) : 0;
+	});
 
 	$effect(() => {
 		if (settingsQuery.isReady && settingsQuery.data.length === 0) {
@@ -209,7 +224,7 @@
 				id="maxshares"
 				type="number"
 				readonly
-				value={67}
+				value={maxShares}
 			/>
 			<InputGroup.Button
 				aria-label="Copy max shares"
