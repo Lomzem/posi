@@ -25,6 +25,7 @@
 			type="text"
 			inputmode="numeric"
 			autocomplete="off"
+			autofocus
 			value={formatCents(entry)}
 			oninput={(e) => {
 				entry = parseDigits(e.currentTarget.value);
