@@ -167,11 +167,13 @@
 	}
 </script>
 
-<Card class="w-lg bg-card-fg p-8">
+<h1 class="sr-only">Position size calculator</h1>
+
+<Card class="w-full max-w-lg bg-card-fg p-4 sm:p-8">
 	{#if settingsQuery.isLoading || !settings}
-		<p>Loading settings…</p>
+		<p aria-live="polite">Loading settings…</p>
 	{:else}
-		<div>
+		<div class="space-y-1.5">
 			<Label for="balance" class="mb-1">Balance</Label>
 			<Input
 				bind:ref={balanceInput}
@@ -179,12 +181,13 @@
 				type="text"
 				inputmode="numeric"
 				autocomplete="off"
+				class="h-11 sm:h-9"
 				value={formatCents(settings.balance ?? 0)}
 				oninput={(event) => updatePrice('balance', event)}
 			/>
 		</div>
 
-		<div>
+		<div class="space-y-1.5">
 			<Label for="entry" class="mb-1">Entry</Label>
 			<Input
 				bind:ref={entryInput}
@@ -192,13 +195,13 @@
 				type="text"
 				inputmode="numeric"
 				autocomplete="off"
-				autofocus
+				class="h-11 sm:h-9"
 				value={formatCents(settings.entry)}
 				oninput={(event) => updatePrice('entry', event)}
 			/>
 		</div>
 
-		<div>
+		<div class="space-y-1.5">
 			<Label for="stop" class="mb-1">Stop</Label>
 			<Input
 				bind:ref={stopInput}
@@ -206,12 +209,13 @@
 				type="text"
 				inputmode="numeric"
 				autocomplete="off"
+				class="h-11 sm:h-9"
 				value={formatCents(settings.stop)}
 				oninput={updateStop}
 			/>
 		</div>
 
-		<div>
+		<div class="space-y-1.5">
 			<Label for="exit" class="mb-1">Exit</Label>
 			<Input
 				bind:ref={exitInput}
@@ -219,12 +223,13 @@
 				type="text"
 				inputmode="numeric"
 				autocomplete="off"
+				class="h-11 sm:h-9"
 				value={formatCents(settings.exit)}
 				oninput={(event) => updatePrice('exit', event)}
 			/>
 		</div>
 
-		<div>
+		<div class="space-y-1.5">
 			<Label for="r-multiple" class="mb-1">R Multiple</Label>
 			<Input
 				bind:ref={rMultipleInput}
@@ -234,6 +239,7 @@
 				autocomplete="off"
 				step="0.1"
 				min="0"
+				class="h-11 sm:h-9"
 				value={formatDecimal(settings.rMultiple ?? 0.1)}
 				oninput={(event) => updateNumber('rMultiple', event)}
 			/>
@@ -241,8 +247,8 @@
 	{/if}
 </Card>
 
-<Card class="w-lg bg-card-fg p-8">
-	<div>
+<Card class="w-full max-w-lg bg-card-fg p-4 sm:p-8">
+	<div class="space-y-1.5">
 		<Label for="maxshares" class="mb-1">Max Shares</Label>
 		<InputGroup.Root>
 			<InputGroup.Input
@@ -250,6 +256,7 @@
 				id="maxshares"
 				type="number"
 				readonly
+				class="h-11 sm:h-9"
 				value={maxShares}
 			/>
 			<InputGroup.Button
@@ -257,7 +264,7 @@
 				size="icon-sm"
 				data-align="inline-end"
 				onclick={copyMaxShares}
-				class="cursor-pointer"
+				class="size-11 cursor-pointer sm:size-8"
 			>
 				{#if didCopyMaxShares}
 					<CheckIcon class="text-green-600" />
