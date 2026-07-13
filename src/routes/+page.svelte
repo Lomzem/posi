@@ -112,6 +112,16 @@
 		});
 	}
 
+	function updateStop(event: Event): void {
+		const input = event.currentTarget as HTMLInputElement;
+		const stop = parseDigits(input.value);
+
+		settingsCollection.update('settings', (draft) => {
+			draft.stop = stop;
+			draft.exit = draft.entry + (draft.entry - stop) * 4;
+		});
+	}
+
 	function updateNumber(field: NumberField, event: Event): void {
 		const input = event.currentTarget as HTMLInputElement;
 		const value = parseNumber(input.value);
@@ -181,7 +191,7 @@
 				inputmode="numeric"
 				autocomplete="off"
 				value={formatCents(settings.stop)}
-				oninput={(event) => updatePrice('stop', event)}
+				oninput={updateStop}
 			/>
 		</div>
 
