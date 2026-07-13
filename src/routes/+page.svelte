@@ -10,6 +10,7 @@
 
 	import { createHotkey } from '@tanstack/svelte-hotkeys';
 
+	let balanceInput = $state<HTMLInputElement | null>(null);
 	let entryInput = $state<HTMLInputElement | null>(null);
 	let stopInput = $state<HTMLInputElement | null>(null);
 	let exitInput = $state<HTMLInputElement | null>(null);
@@ -23,23 +24,27 @@
 		},
 		{ ignoreInputs: false }
 	);
+	createHotkey('B', () => balanceInput!.select(), { ignoreInputs: false });
 	createHotkey('S', () => stopInput!.select(), { ignoreInputs: false });
 	createHotkey('X', () => exitInput!.select(), { ignoreInputs: false });
 	createHotkey('R', () => rMultipleInput!.select(), { ignoreInputs: false });
+	createHotkey('Control+C', () => copyMaxShares(), { ignoreInputs: false });
 
 	interface AppSettings {
 		id: 'settings';
+		balance: number;
 		entry: number;
 		stop: number;
 		exit: number;
 		rMultiple: number;
 	}
 
-	type PriceField = 'entry' | 'stop' | 'exit';
+	type PriceField = 'balance' | 'entry' | 'stop' | 'exit';
 	type NumberField = 'rMultiple';
 
 	const defaultSettings: AppSettings = {
 		id: 'settings',
+		balance: 0,
 		entry: 0,
 		stop: 0,
 		exit: 0,
@@ -95,12 +100,39 @@
 			draft[field] = value;
 		});
 	}
+
+	async function copyMaxShares(): Promise<void> {
+		const value = maxSharesInput?.value ?? '';
+
+		if (!value) {
+			return;
+		}
+
+		try {
+			await navigator.clipboard.writeText(value);
+		} catch {
+			maxSharesInput?.select();
+		}
+	}
 </script>
 
 <Card class="w-lg bg-card-fg p-8">
 	{#if settingsQuery.isLoading || !settings}
 		<p>Loading settings…</p>
 	{:else}
+		<div>
+			<Label for="balance" class="mb-1">Balance</Label>
+			<Input
+				bind:ref={balanceInput}
+				id="balance"
+				type="text"
+				inputmode="numeric"
+				autocomplete="off"
+				value={formatCents(settings.balance ?? 0)}
+				oninput={(event) => updatePrice('balance', event)}
+			/>
+		</div>
+
 		<div>
 			<Label for="entry" class="mb-1">Entry</Label>
 			<Input
@@ -158,7 +190,7 @@
 
 		<div>
 			<Label for="maxshares" class="mb-1">Max Shares</Label>
-			<Input bind:ref={maxSharesInput} id="maxshares" type="number" readonly value={0} />
+			<Input bind:ref={maxSharesInput} id="maxshares" type="number" readonly value={67} />
 		</div>
 	{/if}
 </Card>
