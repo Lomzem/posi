@@ -13,6 +13,8 @@
 	let entryInput = $state<HTMLInputElement | null>(null);
 	let stopInput = $state<HTMLInputElement | null>(null);
 	let exitInput = $state<HTMLInputElement | null>(null);
+	let rMultipleInput = $state<HTMLInputElement | null>(null);
+	let maxSharesInput = $state<HTMLInputElement | null>(null);
 
 	createHotkey(
 		'E',
@@ -23,21 +25,25 @@
 	);
 	createHotkey('S', () => stopInput!.select(), { ignoreInputs: false });
 	createHotkey('X', () => exitInput!.select(), { ignoreInputs: false });
+	createHotkey('R', () => rMultipleInput!.select(), { ignoreInputs: false });
 
 	interface AppSettings {
 		id: 'settings';
 		entry: number;
 		stop: number;
 		exit: number;
+		rMultiple: number;
 	}
 
 	type PriceField = 'entry' | 'stop' | 'exit';
+	type NumberField = 'rMultiple';
 
 	const defaultSettings: AppSettings = {
 		id: 'settings',
 		entry: 0,
 		stop: 0,
-		exit: 0
+		exit: 0,
+		rMultiple: 0
 	};
 
 	const settingsCollection = createCollection(
@@ -67,9 +73,23 @@
 		return digits ? Number.parseInt(digits, 10) : 0;
 	}
 
+	function parseNumber(value: string): number {
+		const parsed = Number.parseFloat(value);
+		return Number.isFinite(parsed) ? parsed : 0;
+	}
+
 	function updatePrice(field: PriceField, event: Event): void {
 		const input = event.currentTarget as HTMLInputElement;
 		const value = parseDigits(input.value);
+
+		settingsCollection.update('settings', (draft) => {
+			draft[field] = value;
+		});
+	}
+
+	function updateNumber(field: NumberField, event: Event): void {
+		const input = event.currentTarget as HTMLInputElement;
+		const value = parseNumber(input.value);
 
 		settingsCollection.update('settings', (draft) => {
 			draft[field] = value;
@@ -122,8 +142,23 @@
 		</div>
 
 		<div>
+			<Label for="r-multiple" class="mb-1">R Multiple</Label>
+			<Input
+				bind:ref={rMultipleInput}
+				id="r-multiple"
+				type="number"
+				inputmode="decimal"
+				autocomplete="off"
+				step="0.1"
+				min="0"
+				value={settings.rMultiple ?? 0}
+				oninput={(event) => updateNumber('rMultiple', event)}
+			/>
+		</div>
+
+		<div>
 			<Label for="maxshares" class="mb-1">Max Shares</Label>
-			<Input id="maxshares" type="number" readonly value={0} />
+			<Input bind:ref={maxSharesInput} id="maxshares" type="number" readonly value={0} />
 		</div>
 	{/if}
 </Card>
