@@ -187,10 +187,12 @@
 				oninput={(event) => updateNumber('rMultiple', event)}
 			/>
 		</div>
-
-		<div>
-			<Label for="maxshares" class="mb-1">Max Shares</Label>
-			<Input bind:ref={maxSharesInput} id="maxshares" type="number" readonly value={67} />
-		</div>
 	{/if}
+</Card>
+
+<Card class="w-lg bg-card-fg p-8">
+	<div>
+		<Label for="maxshares" class="mb-1">Max Shares</Label>
+		<Input bind:ref={maxSharesInput} id="maxshares" type="number" readonly value={67} />
+	</div>
 </Card>
