@@ -8,6 +8,22 @@
 		useLiveQuery
 	} from '@tanstack/svelte-db';
 
+	import { createHotkey } from '@tanstack/svelte-hotkeys';
+
+	let entryInput = $state<HTMLInputElement | null>(null);
+	let stopInput = $state<HTMLInputElement | null>(null);
+	let exitInput = $state<HTMLInputElement | null>(null);
+
+	createHotkey(
+		'E',
+		() => {
+			entryInput!.select();
+		},
+		{ ignoreInputs: false }
+	);
+	createHotkey('S', () => stopInput!.select(), { ignoreInputs: false });
+	createHotkey('X', () => exitInput!.select(), { ignoreInputs: false });
+
 	interface AppSettings {
 		id: 'settings';
 		entry: number;
@@ -68,6 +84,7 @@
 		<div>
 			<Label for="entry" class="mb-1">Entry</Label>
 			<Input
+				bind:ref={entryInput}
 				id="entry"
 				type="text"
 				inputmode="numeric"
@@ -81,6 +98,7 @@
 		<div>
 			<Label for="stop" class="mb-1">Stop</Label>
 			<Input
+				bind:ref={stopInput}
 				id="stop"
 				type="text"
 				inputmode="numeric"
@@ -93,6 +111,7 @@
 		<div>
 			<Label for="exit" class="mb-1">Exit</Label>
 			<Input
+				bind:ref={exitInput}
 				id="exit"
 				type="text"
 				inputmode="numeric"

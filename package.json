@@ -53,6 +53,7 @@
 		"vite": "^8.0.16"
 	},
 	"dependencies": {
-		"@tanstack/svelte-db": "^0.1.91"
+		"@tanstack/svelte-db": "^0.1.91",
+		"@tanstack/svelte-hotkeys": "^0.10.0"
 	}
 }
