@@ -1,16 +1,17 @@
 <script lang="ts">
 	import Card from '$lib/components/ui/card/card.svelte';
+	import * as InputGroup from '$lib/components/ui/input-group';
 	import Input from '$lib/components/ui/input/input.svelte';
 	import Label from '$lib/components/ui/label/label.svelte';
-	import { Toaster } from '$lib/components/ui/sonner';
 	import {
 		createCollection,
 		localStorageCollectionOptions,
 		useLiveQuery
 	} from '@tanstack/svelte-db';
 
+	import CheckIcon from '@lucide/svelte/icons/check';
+	import ClipboardIcon from '@lucide/svelte/icons/clipboard';
 	import { createHotkey } from '@tanstack/svelte-hotkeys';
-	import { toast } from 'svelte-sonner';
 
 	let balanceInput = $state<HTMLInputElement | null>(null);
 	let entryInput = $state<HTMLInputElement | null>(null);
@@ -18,6 +19,8 @@
 	let exitInput = $state<HTMLInputElement | null>(null);
 	let rMultipleInput = $state<HTMLInputElement | null>(null);
 	let maxSharesInput = $state<HTMLInputElement | null>(null);
+	let didCopyMaxShares = $state(false);
+	let copyResetTimeout: ReturnType<typeof setTimeout> | undefined;
 
 	createHotkey(
 		'E',
@@ -112,17 +115,16 @@
 
 		try {
 			await navigator.clipboard.writeText(value);
-			toast.success('Copied to clipboard', {
-				description: value,
-				duration: 750
-			});
+			didCopyMaxShares = true;
+			clearTimeout(copyResetTimeout);
+			copyResetTimeout = setTimeout(() => {
+				didCopyMaxShares = false;
+			}, 1200);
 		} catch {
 			maxSharesInput?.select();
 		}
 	}
 </script>
-
-<Toaster />
 
 <Card class="w-lg bg-card-fg p-8">
 	{#if settingsQuery.isLoading || !settings}
@@ -201,6 +203,26 @@
 <Card class="w-lg bg-card-fg p-8">
 	<div>
 		<Label for="maxshares" class="mb-1">Max Shares</Label>
-		<Input bind:ref={maxSharesInput} id="maxshares" type="number" readonly value={67} />
+		<InputGroup.Root>
+			<InputGroup.Input
+				bind:ref={maxSharesInput}
+				id="maxshares"
+				type="number"
+				readonly
+				value={67}
+			/>
+			<InputGroup.Button
+				aria-label="Copy max shares"
+				size="icon-sm"
+				data-align="inline-end"
+				onclick={copyMaxShares}
+			>
+				{#if didCopyMaxShares}
+					<CheckIcon class="text-green-600" />
+				{:else}
+					<ClipboardIcon class="cursor-pointer" />
+				{/if}
+			</InputGroup.Button>
+		</InputGroup.Root>
 	</div>
 </Card>
