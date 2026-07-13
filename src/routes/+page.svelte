@@ -2,6 +2,7 @@
 	import Card from '$lib/components/ui/card/card.svelte';
 	import Input from '$lib/components/ui/input/input.svelte';
 	import Label from '$lib/components/ui/label/label.svelte';
+	import { Toaster } from '$lib/components/ui/sonner';
 	import {
 		createCollection,
 		localStorageCollectionOptions,
@@ -9,6 +10,7 @@
 	} from '@tanstack/svelte-db';
 
 	import { createHotkey } from '@tanstack/svelte-hotkeys';
+	import { toast } from 'svelte-sonner';
 
 	let balanceInput = $state<HTMLInputElement | null>(null);
 	let entryInput = $state<HTMLInputElement | null>(null);
@@ -110,11 +112,17 @@
 
 		try {
 			await navigator.clipboard.writeText(value);
+			toast.success('Copied to clipboard', {
+				description: value,
+				duration: 750
+			});
 		} catch {
 			maxSharesInput?.select();
 		}
 	}
 </script>
+
+<Toaster />
 
 <Card class="w-lg bg-card-fg p-8">
 	{#if settingsQuery.isLoading || !settings}
